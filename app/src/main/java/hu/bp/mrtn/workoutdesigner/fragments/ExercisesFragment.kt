@@ -3,7 +3,10 @@ package hu.bp.mrtn.workoutdesigner.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentExercisesBinding
 
@@ -27,26 +30,39 @@ class ExercisesFragment : Fragment() {
 
 
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu, menu)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initMenu()
     }
 
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.toolbar_edit -> {
-                Log.d(TAG, "toggle edit")
+
+    private fun initMenu() {
+        (requireActivity() as MenuHost).addMenuProvider(object: MenuProvider {
+
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu, menu)
             }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
 
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when(menuItem.itemId) {
+                    R.id.toolbar_edit -> {
 
-    override fun onResume() {
-        super.onResume()
-        setHasOptionsMenu(true)
+                        // megjelenítjük a floating buttont
+                        // az adapterben újraállítjuk a listenereket
+
+                        Log.d(TAG, "toggle edit")
+                        return true
+                    }
+                }
+                return false
+            }
+
+
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
 
