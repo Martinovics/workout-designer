@@ -13,8 +13,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var tabLayout: TabLayout
-    private lateinit var viewPager: ViewPager2
+
 
 
 
@@ -22,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         this.binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar.root)
 
 
         this.binding.viewPager.adapter = ViewPagerAdapter(this)
