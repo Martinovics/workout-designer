@@ -6,8 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.databinding.WorkoutRowBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
-
-
+import java.util.Collections
 
 
 class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Adapter<WorkoutAdapter.ItemViewHolder>() {
@@ -48,6 +47,14 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
     fun removeWorkout(position: Int) {
         this.workouts.removeAt(position)
         notifyItemRemoved(position)
+    }
+
+
+
+
+    fun swapWorkouts(fromPosition: Int, toPosition: Int) {
+        Collections.swap(this.workouts, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
     }
 
 

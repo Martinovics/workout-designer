@@ -9,22 +9,26 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.WorkoutAdapter
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentExercisesBinding
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentWorkoutsBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
+import java.util.Collections
 
 
-class WorkoutsFragment : Fragment(), ItemClickInterface {
+class WorkoutsFragment() : Fragment(), ItemClickInterface {
 
 
     private val TAG = "WorkoutsFragment"
     private var editModeOn = false
     private lateinit var binding: FragmentWorkoutsBinding
     private lateinit var adapter: WorkoutAdapter
+    private lateinit var itemTouchHelper: ItemTouchHelper
 
 
 
@@ -42,6 +46,7 @@ class WorkoutsFragment : Fragment(), ItemClickInterface {
 
         this.initMenu()
         this.initRecycleView()
+        this.initTouchHelper()
 
 
         binding.btnAddWorkout.visibility = View.GONE
@@ -108,6 +113,31 @@ class WorkoutsFragment : Fragment(), ItemClickInterface {
         this.adapter = WorkoutAdapter(this)
         this.binding.rvWorkouts.adapter = this.adapter
         this.binding.rvWorkouts.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+
+
+
+    private fun initTouchHelper() {
+        val simpleCallback = object: ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.START or ItemTouchHelper.END, 0) {
+
+
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                val fromPos = viewHolder.adapterPosition
+                val toPos = target.adapterPosition
+                this@WorkoutsFragment.adapter.swapWorkouts(fromPos, toPos)
+                return false
+            }
+
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            }
+        }
+
+
+        this.itemTouchHelper = ItemTouchHelper(simpleCallback)
+        this.itemTouchHelper.attachToRecyclerView(this.binding.rvWorkouts)
     }
 
 
