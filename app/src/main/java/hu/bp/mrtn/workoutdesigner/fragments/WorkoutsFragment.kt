@@ -17,6 +17,7 @@ import hu.bp.mrtn.workoutdesigner.adapters.WorkoutAdapter
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentExercisesBinding
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentWorkoutsBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
+import hu.bp.mrtn.workoutdesigner.models.WorkoutModel
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
 import java.util.Collections
 
@@ -51,7 +52,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface {
 
         binding.btnAddWorkout.visibility = View.GONE
         binding.btnAddWorkout.setOnClickListener {
-            this.adapter.addWorkout(WorkoutPreviewModel())
+            this.adapter.addWorkout(WorkoutModel())
         }
 
     }
@@ -145,10 +146,22 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface {
 
 
     override fun onItemClicked(position: Int) {
-
+        if (!this.editModeOn) {
+            Log.d(TAG, "load new workout")
+        } else {
+            Log.d(TAG, "edit workout")
+        }
     }
 
     override fun onItemLongClicked(position: Int): Boolean {
+        if (!this.editModeOn) {
+            return true
+        }
+
+
+        Log.d(TAG, "delete workout")
+
+
         return true
     }
 

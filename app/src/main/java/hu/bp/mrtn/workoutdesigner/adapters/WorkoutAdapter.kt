@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.databinding.WorkoutRowBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
+import hu.bp.mrtn.workoutdesigner.models.WorkoutModel
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
 import java.util.Collections
 
@@ -12,7 +13,7 @@ import java.util.Collections
 class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Adapter<WorkoutAdapter.ItemViewHolder>() {
 
 
-    private var workouts = ArrayList<WorkoutPreviewModel>()
+    private var workouts = ArrayList<WorkoutModel>()
 
 
 
@@ -25,7 +26,15 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.binding.textView2.text = "asd"
+        val workout = this.workouts[position]
+
+        holder.binding.tvWorkoutName.text = workout.workoutName
+        holder.binding.tvWorkoutSeries.text = workout.totalSeries.toString()
+        holder.binding.tvWorkoutSets.text = workout.totalSets.toString()
+        holder.binding.tvWorkoutDescription.text = workout.workoutDescription
+
+        holder.binding.root.setOnClickListener { listener.onItemClicked(position) }
+        holder.binding.root.setOnLongClickListener { listener.onItemLongClicked(position) }
     }
 
 
@@ -36,7 +45,7 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
 
 
-    fun addWorkout(workout: WorkoutPreviewModel) {
+    fun addWorkout(workout: WorkoutModel) {
         this.workouts.add(workout)
         notifyItemInserted(this.workouts.size - 1)
     }

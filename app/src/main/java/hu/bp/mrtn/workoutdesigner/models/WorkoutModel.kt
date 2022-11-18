@@ -1,0 +1,8 @@
+package hu.bp.mrtn.workoutdesigner.models
+
+data class WorkoutModel(
+    var workoutName: String = "Workout",
+    var totalSeries: Int = 0,
+    var totalSets: Int = 0,
+    var workoutDescription: String = "Description"
+)
