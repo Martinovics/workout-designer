@@ -1,9 +1,11 @@
 package hu.bp.mrtn.workoutdesigner.fragments
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Switch
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -12,17 +14,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import hu.bp.mrtn.workoutdesigner.MainActivity
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.WorkoutAdapter
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentExercisesBinding
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentWorkoutsBinding
+import hu.bp.mrtn.workoutdesigner.interfaces.EditWorkoutDialogClickInterface
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
 import hu.bp.mrtn.workoutdesigner.models.WorkoutModel
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
 import java.util.Collections
 
 
-class WorkoutsFragment() : Fragment(), ItemClickInterface {
+class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClickInterface {
 
 
     private val TAG = "WorkoutsFragment"
@@ -144,25 +148,45 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface {
 
 
 
-
     override fun onItemClicked(position: Int) {
         if (!this.editModeOn) {
-            Log.d(TAG, "load new workout")
-        } else {
-            Log.d(TAG, "edit workout")
+            (activity as MainActivity).turnToExercisesPage()
+            return
         }
+
+        EditWorkoutDialogFragment(this, this.adapter.getWorkoutAt(position), position).show(parentFragmentManager, "asd")
     }
+
+
+
 
     override fun onItemLongClicked(position: Int): Boolean {
         if (!this.editModeOn) {
+            Log.d(TAG, "clicked on position=$position")
             return true
         }
 
 
-        Log.d(TAG, "delete workout")
-
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Delete workout")
+        builder.setMessage("You're about to delete: ${this.adapter.getWorkoutAt(position).workoutName}")
+        builder.setPositiveButton("delete") { _: DialogInterface, _: Int ->
+            this.adapter.removeWorkout(position)
+            // todo ilyenkor frissíteni kell az osszes workout indexét, a sorrendezés miatt
+        }
+        builder.setNegativeButton("cancel") { _: DialogInterface, _: Int -> }
+        builder.show()
 
         return true
+    }
+
+
+
+
+    override fun onSaveWorkoutClicked(workout_name: String, workout_description: String, position: Int) {
+        Log.d(TAG, "data from dialog:  $workout_name $workout_description $position")
+        this.adapter.setWorkoutName(workout_name, position)
+        this.adapter.setWorkoutDescription(workout_description, position)
     }
 
 

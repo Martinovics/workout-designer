@@ -3,6 +3,7 @@ package hu.bp.mrtn.workoutdesigner
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Switch
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -14,6 +15,7 @@ import hu.bp.mrtn.workoutdesigner.databinding.ToolbarBinding
 class MainActivity : AppCompatActivity() {
 
 
+    private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
 
 
@@ -37,6 +39,13 @@ class MainActivity : AppCompatActivity() {
                 else -> { throw Resources.NotFoundException("Couldn't find tab title at $position") }
             }
         }.attach()
-
     }
+
+
+
+
+    fun turnToExercisesPage() {
+        this.binding.viewPager.setCurrentItem(2, true)
+    }
+
 }

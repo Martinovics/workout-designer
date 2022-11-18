@@ -1,5 +1,6 @@
 package hu.bp.mrtn.workoutdesigner.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -45,9 +46,15 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
 
 
+    fun getWorkoutAt(position: Int): WorkoutModel {
+        return this.workouts[position]
+    }
+
+
+
     fun addWorkout(workout: WorkoutModel) {
         this.workouts.add(workout)
-        notifyItemInserted(this.workouts.size - 1)
+        notifyItemInserted(itemCount - 1)
     }
 
 
@@ -55,7 +62,8 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
     fun removeWorkout(position: Int) {
         this.workouts.removeAt(position)
-        notifyItemRemoved(position)
+        notifyItemRemoved(position)  // ez valójában nem frissíti le az elemek új pozícióját, ami a törlés miatt lett
+        notifyItemRangeChanged(position, itemCount)  // kell, különben nem frissül az elemek pozíciója
     }
 
 
@@ -67,6 +75,20 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
     }
 
 
+
+
+    fun setWorkoutName(workout_name: String, position: Int) {
+        this.workouts[position].workoutName = workout_name
+        notifyItemChanged(position)
+    }
+
+
+
+
+    fun setWorkoutDescription(workout_description: String, position: Int) {
+        this.workouts[position].workoutDescription = workout_description
+        notifyItemChanged(position)
+    }
 
 
     inner class ItemViewHolder(val binding: WorkoutRowBinding) : RecyclerView.ViewHolder(binding.root)
