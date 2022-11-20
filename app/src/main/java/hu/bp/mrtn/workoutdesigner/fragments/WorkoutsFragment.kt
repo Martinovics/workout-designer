@@ -4,9 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -17,13 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.MainActivity
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.WorkoutAdapter
-import hu.bp.mrtn.workoutdesigner.databinding.FragmentExercisesBinding
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentWorkoutsBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.EditWorkoutDialogClickInterface
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
-import hu.bp.mrtn.workoutdesigner.models.WorkoutModel
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
-import java.util.Collections
+
+
 
 
 class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClickInterface {
@@ -56,7 +53,8 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
         binding.btnAddWorkout.visibility = View.GONE
         binding.btnAddWorkout.setOnClickListener {
-            this.adapter.addWorkout(WorkoutModel())
+            this.adapter.addWorkout(WorkoutPreviewModel())
+            this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
         }
 
     }

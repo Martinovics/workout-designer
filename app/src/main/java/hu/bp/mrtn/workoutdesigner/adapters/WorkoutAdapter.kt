@@ -3,18 +3,20 @@ package hu.bp.mrtn.workoutdesigner.adapters
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.UiThread
 import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.databinding.WorkoutRowBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
-import hu.bp.mrtn.workoutdesigner.models.WorkoutModel
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
 import java.util.Collections
+import kotlin.math.max
+import kotlin.math.min
 
 
 class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Adapter<WorkoutAdapter.ItemViewHolder>() {
 
 
-    private var workouts = ArrayList<WorkoutModel>()
+    private var workouts = ArrayList<WorkoutPreviewModel>()
 
 
 
@@ -46,13 +48,13 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
 
 
-    fun getWorkoutAt(position: Int): WorkoutModel {
+    fun getWorkoutAt(position: Int): WorkoutPreviewModel {
         return this.workouts[position]
     }
 
 
 
-    fun addWorkout(workout: WorkoutModel) {
+    fun addWorkout(workout: WorkoutPreviewModel) {
         this.workouts.add(workout)
         notifyItemInserted(itemCount - 1)
     }
@@ -62,8 +64,9 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
     fun removeWorkout(position: Int) {
         this.workouts.removeAt(position)
-        notifyItemRemoved(position)  // ez valójában nem frissíti le az elemek új pozícióját, ami a törlés miatt lett
-        notifyItemRangeChanged(position, itemCount)  // kell, különben nem frissül az elemek pozíciója
+        Log.d("adapter", "removed at=$position")
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, itemCount - position)
     }
 
 
@@ -71,7 +74,16 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
     fun swapWorkouts(fromPosition: Int, toPosition: Int) {
         Collections.swap(this.workouts, fromPosition, toPosition)
+        Log.d("adapter", "moved from=$fromPosition to=$toPosition")
         notifyItemMoved(fromPosition, toPosition)
+
+        if (fromPosition < toPosition) {
+            notifyItemRangeChanged(fromPosition, toPosition - fromPosition + 1)
+        } else {
+            // from=1 to=0 esetén csak úgy beugrik a helyére --> nem jó, de nem is tragikus
+            notifyItemRangeChanged(toPosition, fromPosition - toPosition + 1)
+        }
+
     }
 
 
