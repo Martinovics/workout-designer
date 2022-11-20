@@ -58,9 +58,8 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
         binding.btnAddWorkout.visibility = View.GONE
         binding.btnAddWorkout.setOnClickListener {
-            //this.adapter.addWorkout(WorkoutPreviewModel())
-            //this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
             this.addWorkout(WorkoutModel(workoutName = this.adapter.genUniqueWorkoutName()))
+            this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
         }
 
     }

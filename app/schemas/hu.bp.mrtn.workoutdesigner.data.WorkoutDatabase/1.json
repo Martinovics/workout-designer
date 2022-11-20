@@ -1,0 +1,166 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "b3eb47b44c090dd05f746c2389b6cf4e",
+    "entities": [
+      {
+        "tableName": "workouts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `workout_name` TEXT NOT NULL DEFAULT 'Workout', `workout_index` INTEGER NOT NULL DEFAULT 0, `workout_color_hex` TEXT NOT NULL DEFAULT '#01284a', `workout_description` TEXT NOT NULL DEFAULT 'Description')",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "workoutName",
+            "columnName": "workout_name",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Workout'"
+          },
+          {
+            "fieldPath": "workoutIndex",
+            "columnName": "workout_index",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "workoutColorHex",
+            "columnName": "workout_color_hex",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'#01284a'"
+          },
+          {
+            "fieldPath": "workoutDescription",
+            "columnName": "workout_description",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Description'"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "exercises",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `workout_name` TEXT NOT NULL DEFAULT 'Workout', `exercise_name` TEXT NOT NULL DEFAULT 'Exercise', `exercise_index` INTEGER NOT NULL DEFAULT 0, `exercise_color_hex` TEXT NOT NULL DEFAULT '#01284a', `exercise_description` TEXT NOT NULL DEFAULT 'Description', `exercise_comment` TEXT NOT NULL DEFAULT 'Comment', `curr_reps` INTEGER NOT NULL DEFAULT 0, `goal_reps` INTEGER NOT NULL DEFAULT 0, `curr_weight` INTEGER NOT NULL DEFAULT 0, `goal_weight` INTEGER NOT NULL DEFAULT 0, `muscle_group` TEXT NOT NULL DEFAULT 'Muscle group', `muscle_part` TEXT NOT NULL DEFAULT 'Muscle part')",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "workoutName",
+            "columnName": "workout_name",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Workout'"
+          },
+          {
+            "fieldPath": "exerciseName",
+            "columnName": "exercise_name",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Exercise'"
+          },
+          {
+            "fieldPath": "exerciseIndex",
+            "columnName": "exercise_index",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "exerciseColorHex",
+            "columnName": "exercise_color_hex",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'#01284a'"
+          },
+          {
+            "fieldPath": "exerciseDescription",
+            "columnName": "exercise_description",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Description'"
+          },
+          {
+            "fieldPath": "exerciseComment",
+            "columnName": "exercise_comment",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Comment'"
+          },
+          {
+            "fieldPath": "currReps",
+            "columnName": "curr_reps",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "goalReps",
+            "columnName": "goal_reps",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "currWeight",
+            "columnName": "curr_weight",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "goalWeight",
+            "columnName": "goal_weight",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "muscleGroup",
+            "columnName": "muscle_group",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Muscle group'"
+          },
+          {
+            "fieldPath": "musclePart",
+            "columnName": "muscle_part",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Muscle part'"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b3eb47b44c090dd05f746c2389b6cf4e')"
+    ]
+  }
+}

@@ -137,12 +137,21 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
     }
 
 
-    fun genUniqueWorkoutName(): String {
 
+
+    private fun getWorkoutNames(): ArrayList<String> {
         val workoutNames = ArrayList<String>()
         for (workout in this.workouts) {
             workoutNames.add(workout.workout.workoutName)
         }
+        return workoutNames
+    }
+
+
+
+    fun genUniqueWorkoutName(): String {
+
+        val workoutNames = this.getWorkoutNames()
 
         for (i in 1..1000) {
             val uniqueName = "Workout-$i"
@@ -151,6 +160,12 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
             }
         }
         return ""
+    }
+
+
+    fun conflictingWorkoutName(workoutName: String): Boolean {
+        val workoutNames = this.getWorkoutNames()
+        return workoutNames.contains(workoutName)
     }
 
 

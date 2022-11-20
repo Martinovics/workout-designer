@@ -9,8 +9,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "workouts")
 data class WorkoutModel(
-    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) var id: Long? = null,
-    @ColumnInfo(name = "workout_name", defaultValue = "Workout") var workoutName: String = "Workout",
+    @ColumnInfo(name = "workout_name") @PrimaryKey(autoGenerate = false) var workoutName: String,
     @ColumnInfo(name = "workout_index", defaultValue = "0") var workoutIndex: Int = 0,
     @ColumnInfo(name = "workout_color_hex", defaultValue = "#01284a") var workoutColorHex: String = "#01284a",
     @ColumnInfo(name = "workout_description", defaultValue = "Description") var workoutDescription: String = "Description"
