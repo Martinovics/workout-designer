@@ -15,12 +15,14 @@ import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.MainActivity
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.WorkoutAdapter
+import hu.bp.mrtn.workoutdesigner.data.DatabaseDao
+import hu.bp.mrtn.workoutdesigner.data.WorkoutDatabase
+import hu.bp.mrtn.workoutdesigner.data.WorkoutModel
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentWorkoutsBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.EditWorkoutDialogClickInterface
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
-
-
+import kotlin.concurrent.thread
 
 
 class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClickInterface {
@@ -31,6 +33,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
     private lateinit var binding: FragmentWorkoutsBinding
     private lateinit var adapter: WorkoutAdapter
     private lateinit var itemTouchHelper: ItemTouchHelper
+    private lateinit var db: DatabaseDao
 
 
 
@@ -46,15 +49,20 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        this.db = WorkoutDatabase.getDatabase(requireContext()).getDao()
+
         this.initMenu()
         this.initRecycleView()
         this.initTouchHelper()
 
+        this.loadWorkouts()
+
 
         binding.btnAddWorkout.visibility = View.GONE
         binding.btnAddWorkout.setOnClickListener {
-            this.adapter.addWorkout(WorkoutPreviewModel())
-            this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
+            //this.adapter.addWorkout(WorkoutPreviewModel())
+            //this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
+            this.addWorkout(WorkoutModel())
         }
 
     }
@@ -116,6 +124,8 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
         this.adapter = WorkoutAdapter(this)
         this.binding.rvWorkouts.adapter = this.adapter
         this.binding.rvWorkouts.layoutManager = LinearLayoutManager(requireContext())
+
+        // todo adatok betöltése a db-ből
     }
 
 
@@ -185,6 +195,44 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
         Log.d(TAG, "data from dialog:  $workout_name $workout_description $position")
         this.adapter.setWorkoutName(workout_name, position)
         this.adapter.setWorkoutDescription(workout_description, position)
+    }
+
+
+
+
+    private fun addWorkout(workout: WorkoutModel) {
+        thread {
+            this.db.insert(workout)
+
+            activity?.runOnUiThread {
+                this.adapter.addWorkout(WorkoutPreviewModel())
+                this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
+            }
+        }
+    }
+
+
+
+
+    private fun loadWorkouts() {
+        thread {
+            val workouts = this.db.getWorkouts()
+
+            activity?.runOnUiThread {
+                for (workout in workouts) {
+
+                    val workoutPrev = WorkoutPreviewModel(
+                        workoutName = workout.workout.workoutName,
+                        workoutDescription = workout.workout.workoutDescription,
+                        workoutColorHex = workout.workout.workoutColorHex,
+                        totalSeries = workout.exercises.size,
+                        totalSets = workout.exercises.size
+                    )
+
+                    this.adapter.addWorkout(workoutPrev)
+                }
+            }
+        }
     }
 
 
