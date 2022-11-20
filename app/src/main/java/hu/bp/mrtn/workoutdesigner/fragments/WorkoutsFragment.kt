@@ -58,7 +58,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
         binding.btnAddWorkout.visibility = View.GONE
         binding.btnAddWorkout.setOnClickListener {
-            this.addWorkout(WorkoutModel(workoutName = this.adapter.genUniqueWorkoutName()))
+            this.addWorkout(WorkoutModel(id=null, workoutName = this.adapter.genUniqueWorkoutName()))
             this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
         }
 
@@ -94,8 +94,10 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
                         if (editModeOn) {  // a szerkesztő gomb hátterét is be lehetne állítani
                             binding.btnAddWorkout.visibility = View.VISIBLE
+                            //this@WorkoutsFragment.itemTouchHelper.attachToRecyclerView(this@WorkoutsFragment.binding.rvWorkouts)
                         } else {
                             binding.btnAddWorkout.visibility = View.GONE
+                           // this@WorkoutsFragment.itemTouchHelper.attachToRecyclerView(this@WorkoutsFragment.binding.rvWorkouts)
                         }
 
 
@@ -147,7 +149,6 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
 
         this.itemTouchHelper = ItemTouchHelper(simpleCallback)
-        this.itemTouchHelper.attachToRecyclerView(this.binding.rvWorkouts)
     }
 
 
@@ -217,7 +218,8 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
     private fun addWorkout(workout: WorkoutModel) {
         thread {
-            this.db.insert(workout)
+            val id = this.db.insert(workout)
+            workout.id = id
 
             activity?.runOnUiThread {
                 this.adapter.addWorkout(workout)

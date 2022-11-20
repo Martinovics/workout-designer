@@ -7,9 +7,6 @@ import androidx.room.migration.AutoMigrationSpec
 
 
 
-@DeleteColumn(
-    tableName="workouts",
-    columnName="id"
-)
+
 class CustomMigration: AutoMigrationSpec {
 }
