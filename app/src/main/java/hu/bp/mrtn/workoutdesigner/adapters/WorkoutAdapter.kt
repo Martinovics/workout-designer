@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.recyclerview.widget.RecyclerView
+import hu.bp.mrtn.workoutdesigner.data.WorkoutModel
+import hu.bp.mrtn.workoutdesigner.data.WorkoutWithExercises
 import hu.bp.mrtn.workoutdesigner.databinding.WorkoutRowBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
@@ -31,10 +33,13 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val workout = this.workouts[position]
 
-        holder.binding.tvWorkoutName.text = workout.workoutName
-        holder.binding.tvWorkoutSeries.text = workout.totalSeries.toString()
-        holder.binding.tvWorkoutSets.text = workout.totalSets.toString()
-        holder.binding.tvWorkoutDescription.text = workout.workoutDescription
+        val totalSeries = workout.totalSeries  // todo ki kell számolni -> ahány különboző elem van
+        val totalSets = workout.totalSets
+
+        holder.binding.tvWorkoutName.text = workout.workout.workoutName
+        holder.binding.tvWorkoutSeries.text = totalSeries.toString()
+        holder.binding.tvWorkoutSets.text = totalSets.toString()
+        holder.binding.tvWorkoutDescription.text = workout.workout.workoutDescription
 
         holder.binding.root.setOnClickListener { listener.onItemClicked(position) }
         holder.binding.root.setOnLongClickListener { listener.onItemLongClicked(position) }
@@ -48,14 +53,23 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
 
 
-    fun getWorkoutAt(position: Int): WorkoutPreviewModel {
-        return this.workouts[position]
+    fun getWorkoutAt(position: Int): WorkoutModel {
+        return this.workouts[position].workout
     }
 
 
 
-    fun addWorkout(workout: WorkoutPreviewModel) {
-        this.workouts.add(workout)
+
+    fun addWorkout(workout: WorkoutModel) {
+        this.workouts.add(WorkoutPreviewModel(workout, 0, 0))
+        notifyItemInserted(itemCount - 1)
+    }
+
+
+
+
+    fun addWorkout(workout: WorkoutModel, totalSeries: Int, totalSets: Int) {
+        this.workouts.add(WorkoutPreviewModel(workout, totalSeries, totalSets))
         notifyItemInserted(itemCount - 1)
     }
 
@@ -64,7 +78,6 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
     fun removeWorkout(position: Int) {
         this.workouts.removeAt(position)
-        Log.d("adapter", "removed at=$position")
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemCount - position)
     }
@@ -74,7 +87,6 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
     fun swapWorkouts(fromPosition: Int, toPosition: Int) {
         Collections.swap(this.workouts, fromPosition, toPosition)
-        Log.d("adapter", "moved from=$fromPosition to=$toPosition")
         notifyItemMoved(fromPosition, toPosition)
 
         if (fromPosition < toPosition) {
@@ -89,18 +101,43 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
 
 
-    fun setWorkoutName(workout_name: String, position: Int) {
-        this.workouts[position].workoutName = workout_name
+    fun setWorkoutName(workoutName: String, position: Int) {
+        this.workouts[position].workout.workoutName = workoutName
+        notifyItemChanged(position)
+    }
+
+
+    fun setWorkoutDescription(workoutDescription: String, position: Int) {
+        this.workouts[position].workout.workoutDescription = workoutDescription
+        notifyItemChanged(position)
+    }
+
+
+    fun setWorkoutColorHex(colorHex: String, position: Int) {
+        this.workouts[position].workout.workoutColorHex = colorHex
+        notifyItemChanged(position)
+    }
+
+
+    fun setTotalSeries(totalSeries: Int, position: Int) {
+        this.workouts[position].totalSeries = totalSeries
+        notifyItemChanged(position)
+    }
+
+
+    fun setTotalSets(totalSets: Int, position: Int) {
+        this.workouts[position].totalSets = totalSets
         notifyItemChanged(position)
     }
 
 
 
-
-    fun setWorkoutDescription(workout_description: String, position: Int) {
-        this.workouts[position].workoutDescription = workout_description
+    fun updateWorkout(updatedWorkout: WorkoutModel, position: Int) {
+        this.workouts[position].workout = updatedWorkout
         notifyItemChanged(position)
     }
+
+
 
 
     inner class ItemViewHolder(val binding: WorkoutRowBinding) : RecyclerView.ViewHolder(binding.root)

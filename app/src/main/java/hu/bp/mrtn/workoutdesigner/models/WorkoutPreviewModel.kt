@@ -1,12 +1,12 @@
 package hu.bp.mrtn.workoutdesigner.models
 
+import hu.bp.mrtn.workoutdesigner.data.WorkoutModel
+
 
 
 
 data class WorkoutPreviewModel(
-    var workoutName: String = "Workout",
+    var workout: WorkoutModel = WorkoutModel(),
     var totalSeries: Int = 0,
     var totalSets: Int = 0,
-    var workoutDescription: String = "Description",
-    var workoutColorHex: String = "#00346F"
 )

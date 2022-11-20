@@ -15,9 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.MainActivity
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.WorkoutAdapter
-import hu.bp.mrtn.workoutdesigner.data.DatabaseDao
-import hu.bp.mrtn.workoutdesigner.data.WorkoutDatabase
-import hu.bp.mrtn.workoutdesigner.data.WorkoutModel
+import hu.bp.mrtn.workoutdesigner.data.*
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentWorkoutsBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.EditWorkoutDialogClickInterface
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
@@ -162,7 +160,8 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
             return
         }
 
-        EditWorkoutDialogFragment(this, this.adapter.getWorkoutAt(position), position).show(parentFragmentManager, "asd")
+        val workout = this.adapter.getWorkoutAt(position)
+        EditWorkoutDialogFragment(this, workout, position).show(parentFragmentManager, "asd")
     }
 
 
@@ -179,8 +178,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
         builder.setTitle("Delete workout")
         builder.setMessage("You're about to delete: ${this.adapter.getWorkoutAt(position).workoutName}")
         builder.setPositiveButton("delete") { _: DialogInterface, _: Int ->
-            this.adapter.removeWorkout(position)
-            // todo ilyenkor frissíteni kell az osszes workout indexét, a sorrendezés miatt
+            this.removeWorkout(position)
         }
         builder.setNegativeButton("cancel") { _: DialogInterface, _: Int -> }
         builder.show()
@@ -191,10 +189,28 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
 
 
-    override fun onSaveWorkoutClicked(workout_name: String, workout_description: String, position: Int) {
-        Log.d(TAG, "data from dialog:  $workout_name $workout_description $position")
-        this.adapter.setWorkoutName(workout_name, position)
-        this.adapter.setWorkoutDescription(workout_description, position)
+    override fun onSaveWorkoutClicked(workout_name: String, workout_description: String, position: Int) {  // todo itt még nincs color
+
+        val workout = this.adapter.getWorkoutAt(position)
+        workout.workoutName = workout_name
+        workout.workoutDescription = workout_description
+
+        this.updateWorkout(workout, position)
+    }
+
+
+
+
+    private fun loadWorkouts() {
+        thread {
+            val workouts = this.db.getWorkoutModels()
+
+            activity?.runOnUiThread {
+                for (workout in workouts) {
+                    this.adapter.addWorkout(workout)
+                }
+            }
+        }
     }
 
 
@@ -205,7 +221,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
             this.db.insert(workout)
 
             activity?.runOnUiThread {
-                this.adapter.addWorkout(WorkoutPreviewModel())
+                this.adapter.addWorkout(workout)
                 this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
             }
         }
@@ -214,26 +230,37 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
 
 
-    private fun loadWorkouts() {
+    private fun removeWorkout(position: Int) {
         thread {
-            val workouts = this.db.getWorkouts()
+            val workout = this.adapter.getWorkoutAt(position)
+
+            this.db.delete(workout)
+
+            // todo frissíteni kell az összes többi indexét a sorrendezés miatt
 
             activity?.runOnUiThread {
-                for (workout in workouts) {
-
-                    val workoutPrev = WorkoutPreviewModel(
-                        workoutName = workout.workout.workoutName,
-                        workoutDescription = workout.workout.workoutDescription,
-                        workoutColorHex = workout.workout.workoutColorHex,
-                        totalSeries = workout.exercises.size,
-                        totalSets = workout.exercises.size
-                    )
-
-                    this.adapter.addWorkout(workoutPrev)
-                }
+                this.adapter.removeWorkout(position)
             }
         }
     }
+
+
+
+
+    private fun updateWorkout(updatedWorkout: WorkoutModel, position: Int) {
+        thread {
+
+            this.db.update(updatedWorkout)
+
+            activity?.runOnUiThread {
+                this.adapter.updateWorkout(updatedWorkout, position)
+            }
+        }
+    }
+
+
+
+
 
 
 }

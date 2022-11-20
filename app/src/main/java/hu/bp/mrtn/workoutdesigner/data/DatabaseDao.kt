@@ -23,5 +23,15 @@ interface DatabaseDao {
     fun getWorkouts(): List<WorkoutWithExercises>
 
 
+    @Query("DELETE FROM workouts WHERE workout_name = :workoutName")
+    fun deleteWorkout(workoutName: String)
+
+
+    @Query("SELECT * FROM workouts WHERE workout_name = :workoutName LIMIT 1")
+    fun getWorkoutModel(workoutName: String): WorkoutModel
+
+
+    @Query("SELECT * FROM workouts")
+    fun getWorkoutModels(): List<WorkoutModel>
 
 }
