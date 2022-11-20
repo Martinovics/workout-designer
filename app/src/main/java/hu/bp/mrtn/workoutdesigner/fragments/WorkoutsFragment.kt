@@ -60,7 +60,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
         binding.btnAddWorkout.setOnClickListener {
             //this.adapter.addWorkout(WorkoutPreviewModel())
             //this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
-            this.addWorkout(WorkoutModel())
+            this.addWorkout(WorkoutModel(workoutName = this.adapter.genUniqueWorkoutName()))
         }
 
     }

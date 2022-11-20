@@ -131,10 +131,26 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
     }
 
 
-
     fun updateWorkout(updatedWorkout: WorkoutModel, position: Int) {
         this.workouts[position].workout = updatedWorkout
         notifyItemChanged(position)
+    }
+
+
+    fun genUniqueWorkoutName(): String {
+
+        val workoutNames = ArrayList<String>()
+        for (workout in this.workouts) {
+            workoutNames.add(workout.workout.workoutName)
+        }
+
+        for (i in 1..1000) {
+            val uniqueName = "Workout-$i"
+            if (!workoutNames.contains(uniqueName)) {
+                return uniqueName
+            }
+        }
+        return ""
     }
 
 
