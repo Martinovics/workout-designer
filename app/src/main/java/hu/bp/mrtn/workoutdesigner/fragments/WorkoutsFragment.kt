@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import hu.bp.mrtn.workoutdesigner.data.*
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentWorkoutsBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.EditWorkoutDialogClickInterface
 import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
+import hu.bp.mrtn.workoutdesigner.models.WorkoutDataViewModel
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
 import kotlin.concurrent.thread
 
@@ -32,6 +34,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
     private lateinit var adapter: WorkoutAdapter
     private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var db: DatabaseDao
+    private val workoutDataViewModel: WorkoutDataViewModel by activityViewModels()
 
 
 
@@ -58,7 +61,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
         binding.btnAddWorkout.visibility = View.GONE
         binding.btnAddWorkout.setOnClickListener {
-            this.addWorkout(WorkoutModel(id=null, workoutName = this.adapter.genUniqueWorkoutName()))
+            this.addWorkout(WorkoutModel(workoutID=null, workoutName = this.adapter.genUniqueWorkoutName()))
             this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
         }
 
@@ -105,7 +108,6 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
                         // megjelenítjük a floating buttont
                         // az adapterben újraállítjuk a listenereket
 
-                        Log.d(TAG, "toggle edit")
                         return true
                     }
                 }
@@ -123,8 +125,6 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
         this.adapter = WorkoutAdapter(this)
         this.binding.rvWorkouts.adapter = this.adapter
         this.binding.rvWorkouts.layoutManager = LinearLayoutManager(requireContext())
-
-        // todo adatok betöltése a db-ből
     }
 
 
@@ -155,13 +155,15 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
 
     override fun onItemClicked(position: Int) {
-        if (!this.editModeOn) {
-            (activity as MainActivity).turnToExercisesPage()
-            return
-        }
 
         val workout = this.adapter.getWorkoutAt(position)
-        EditWorkoutDialogFragment(this, workout, position).show(parentFragmentManager, "asd")
+
+        if (this.editModeOn) {
+            EditWorkoutDialogFragment(this, workout, position).show(parentFragmentManager, "asd")
+        } else {
+            //(activity as MainActivity).turnToExercisesPage()
+            this.setWorkoutWithExercises(workout.workoutName)
+        }
     }
 
 
@@ -219,7 +221,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
     private fun addWorkout(workout: WorkoutModel) {
         thread {
             val id = this.db.insert(workout)
-            workout.id = id
+            workout.workoutID = id
 
             activity?.runOnUiThread {
                 this.adapter.addWorkout(workout)
@@ -259,6 +261,28 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
         }
     }
 
+
+
+
+    private fun setWorkoutWithExercises(workoutName: String) {
+        thread {
+            val workouts = this.db.getWorkouts()
+            for (workout in workouts) {
+                if (workout.workout.workoutName == workoutName) {
+
+                    val exercises = ArrayList<ExerciseModel>()
+                    for (exercise in workout.exercises) {
+                        exercises.add(exercise)
+                    }
+
+                    this@WorkoutsFragment.workoutDataViewModel.workout = workout.workout
+                    this@WorkoutsFragment.workoutDataViewModel.exercises = exercises
+
+                    break
+                }
+            }
+        }
+    }
 
 
 

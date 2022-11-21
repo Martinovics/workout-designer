@@ -9,8 +9,8 @@ import androidx.room.Relation
 data class WorkoutWithExercises(
     @Embedded val workout: WorkoutModel,
     @Relation(
-        parentColumn = "workout_name",
-        entityColumn = "workout_name"
+        parentColumn = "workout_id",
+        entityColumn = "workout_id"
     )
     val exercises: List<ExerciseModel>
 )
