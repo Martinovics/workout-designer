@@ -255,9 +255,16 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
     fun preloadExercises(exercises: ArrayList<ExerciseModel>) {
         thread {
             activity?.runOnUiThread {
+
                 this.adapter.clearExercises()
                 for (exercise in exercises) {
                     this.adapter.addExercise(exercise)
+                }
+
+                if (this.adapter.itemCount == 0) {
+                    this.binding.tvAddExerciseHint.visibility = View.VISIBLE
+                } else {
+                    this.binding.tvAddExerciseHint.visibility = View.GONE
                 }
             }
         }

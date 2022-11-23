@@ -32,7 +32,7 @@
         android:id="@+id/tv_add_workout_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add exercises by pressing the edit button (top right)"
+        android:text="Add workouts by pressing the edit button (top right)"
         android:textColor="@color/secondary_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
