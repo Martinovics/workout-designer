@@ -71,6 +71,13 @@ class ExerciseAdapter(private val listener: ExerciseClickInterface): RecyclerVie
 
 
 
+    fun updateExercise(updatedExercise: ExerciseModel, position: Int) {
+        this.exercises[position] = updatedExercise
+        notifyItemChanged(position)
+    }
+
+
+
 
     fun removeExercise(position: Int) {
         this.exercises.removeAt(position)
@@ -92,14 +99,6 @@ class ExerciseAdapter(private val listener: ExerciseClickInterface): RecyclerVie
             notifyItemRangeChanged(toPosition, fromPosition - toPosition + 1)
         }
 
-    }
-
-
-
-
-    fun updateExercise(updatedExercise: ExerciseModel, position: Int) {
-        this.exercises[position] = updatedExercise
-        notifyItemChanged(position)
     }
 
 
