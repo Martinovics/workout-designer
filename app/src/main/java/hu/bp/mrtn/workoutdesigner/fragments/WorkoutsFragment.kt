@@ -290,4 +290,11 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
     }
 
 
+
+
+    fun updateTotalSeriesAndReps(totalSeries: Int, totalSets: Int, position: Int) {
+        this.adapter.updateTotalSeriesAndReps(totalSeries, totalSets, position)
+    }
+
+
 }

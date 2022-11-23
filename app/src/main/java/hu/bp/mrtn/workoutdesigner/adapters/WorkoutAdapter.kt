@@ -140,6 +140,15 @@ class WorkoutAdapter(private val listener: WorkoutClickInterface): RecyclerView.
 
 
 
+    fun updateTotalSeriesAndReps(totalSeries: Int, totalSets: Int, position: Int) {
+        this.workouts[position].totalSeries = totalSeries
+        this.workouts[position].totalSets = totalSets
+        notifyItemChanged(position)
+    }
+
+
+
+
     inner class ItemViewHolder(val binding: WorkoutRowBinding) : RecyclerView.ViewHolder(binding.root)
 
 }

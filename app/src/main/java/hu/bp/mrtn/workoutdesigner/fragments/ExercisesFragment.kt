@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import hu.bp.mrtn.workoutdesigner.MainActivity
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.ExerciseAdapter
 import hu.bp.mrtn.workoutdesigner.data.DatabaseDao
@@ -289,6 +290,11 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
 
             activity?.runOnUiThread {
                 this.adapter.addExercise(exercise)
+                (activity as MainActivity).updateTotalSeriesAndReps(
+                    this.adapter.getTotalSeries(),
+                    this.adapter.itemCount,
+                    this.workoutDataViewModel.workout.workoutIndex
+                )
             }
         }
     }
@@ -302,6 +308,11 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
 
             activity?.runOnUiThread {
                 this.adapter.updateExercise(updatedExercise, position)
+                (activity as MainActivity).updateTotalSeriesAndReps(
+                    this.adapter.getTotalSeries(),
+                    this.adapter.itemCount,
+                    this.workoutDataViewModel.workout.workoutIndex
+                )
             }
         }
     }
@@ -321,6 +332,11 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
 
             activity?.runOnUiThread {
                 this.adapter.removeExercise(position)
+                (activity as MainActivity).updateTotalSeriesAndReps(
+                    this.adapter.getTotalSeries(),
+                    this.adapter.itemCount,
+                    this.workoutDataViewModel.workout.workoutIndex
+                )
             }
         }
     }

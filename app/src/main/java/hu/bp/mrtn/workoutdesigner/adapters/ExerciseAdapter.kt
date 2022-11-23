@@ -108,6 +108,17 @@ class ExerciseAdapter(private val listener: ExerciseClickInterface): RecyclerVie
 
 
 
+    fun getTotalSeries(): Int {
+        val exerciseNames = ArrayList<String>()
+        for (exercise in exercises) {
+            exerciseNames.add(exercise.exerciseName)
+        }
+        return exerciseNames.distinct().size
+    }
+
+
+
+
     inner class ItemViewHolder(val binding: ExerciseRowBinding) : RecyclerView.ViewHolder(binding.root)
 
 }

@@ -14,6 +14,7 @@ import hu.bp.mrtn.workoutdesigner.databinding.ActivityMainBinding
 import hu.bp.mrtn.workoutdesigner.databinding.ToolbarBinding
 import hu.bp.mrtn.workoutdesigner.fragments.ExercisesFragment
 import hu.bp.mrtn.workoutdesigner.fragments.ProgressFragment
+import hu.bp.mrtn.workoutdesigner.fragments.WorkoutsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,6 +59,14 @@ class MainActivity : AppCompatActivity() {
     fun preloadExercises(exercises: ArrayList<ExerciseModel>) {
         val exercisesFragment = supportFragmentManager.findFragmentByTag("f2") as ExercisesFragment
         exercisesFragment.preloadExercises(exercises)
+    }
+
+
+
+
+    fun updateTotalSeriesAndReps(totalSeries: Int, totalSets: Int, position: Int) {
+        val workoutFragment = supportFragmentManager.findFragmentByTag("f1") as WorkoutsFragment
+        workoutFragment.updateTotalSeriesAndReps(totalSeries, totalSets, position)
     }
 
 
