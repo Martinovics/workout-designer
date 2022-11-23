@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.data.ExerciseModel
 import hu.bp.mrtn.workoutdesigner.databinding.ExerciseRowBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.ExerciseClickInterface
-import java.util.Collections
+import java.util.*
 
 
 class ExerciseAdapter(private val listener: ExerciseClickInterface): RecyclerView.Adapter<ExerciseAdapter.ItemViewHolder>() {
@@ -57,8 +57,11 @@ class ExerciseAdapter(private val listener: ExerciseClickInterface): RecyclerVie
 
 
     fun clearExercises() {
+//        this.exercises.clear()
+//        notifyDataSetChanged()
+        val originalSize: Int = itemCount
         this.exercises.clear()
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0, originalSize)
     }
 
 

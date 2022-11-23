@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import hu.bp.mrtn.workoutdesigner.MainActivity
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.WorkoutAdapter
 import hu.bp.mrtn.workoutdesigner.data.*
@@ -275,6 +276,8 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
                     this@WorkoutsFragment.workoutDataViewModel.workout = workout.workout
                     this@WorkoutsFragment.workoutDataViewModel.exercises = exercises
+
+                    (activity as MainActivity).preloadExercises(this.workoutDataViewModel.exercises)
 
                     break
                 }

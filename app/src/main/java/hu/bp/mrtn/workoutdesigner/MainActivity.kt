@@ -9,8 +9,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import hu.bp.mrtn.workoutdesigner.adapters.ViewPagerAdapter
+import hu.bp.mrtn.workoutdesigner.data.ExerciseModel
 import hu.bp.mrtn.workoutdesigner.databinding.ActivityMainBinding
 import hu.bp.mrtn.workoutdesigner.databinding.ToolbarBinding
+import hu.bp.mrtn.workoutdesigner.fragments.ExercisesFragment
+import hu.bp.mrtn.workoutdesigner.fragments.ProgressFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,8 +48,17 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    fun turnToExercisesPage() {
-        this.binding.viewPager.setCurrentItem(2, true)
+    fun turnToExercisesPage(page: Int) {
+        this.binding.viewPager.setCurrentItem(page, true)
     }
+
+
+
+
+    fun preloadExercises(exercises: ArrayList<ExerciseModel>) {
+        val exercisesFragment = supportFragmentManager.findFragmentByTag("f2") as ExercisesFragment
+        exercisesFragment.preloadExercises(exercises)
+    }
+
 
 }

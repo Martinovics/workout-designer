@@ -41,6 +41,7 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        Log.d(logTag, "onCreateView")
         this.binding = FragmentExercisesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -71,7 +72,7 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
     override fun onResume() {
         super.onResume()
 
-        this.loadExercises()
+        // this.loadExercises()
     }
 
 
@@ -249,6 +250,20 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
 
 
 
+    fun preloadExercises(exercises: ArrayList<ExerciseModel>) {
+        thread {
+            activity?.runOnUiThread {
+                this.adapter.clearExercises()
+                for (exercise in exercises) {
+                    this.adapter.addExercise(exercise)
+                }
+            }
+        }
+    }
+
+
+
+
     private fun loadExercises() {
         if (workoutDataViewModel.workout.workoutID == null || workoutDataViewModel.workout.workoutID == 0L) {
             Log.i(logTag, "Choose a workout before adding a new exercise")
@@ -320,6 +335,12 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
     private fun showExerciseEditDialog(position: Int) {
         val exercise = this.adapter.getExerciseAt(position)
         EditExerciseDialogFragment(this, exercise, position).show(parentFragmentManager, "asd")
+    }
+
+
+
+    fun sayHello() {
+        Log.d(logTag, "hello")
     }
 
 
