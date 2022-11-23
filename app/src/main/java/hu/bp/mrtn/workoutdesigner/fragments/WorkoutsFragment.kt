@@ -2,6 +2,8 @@ package hu.bp.mrtn.workoutdesigner.fragments
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AlertDialog
@@ -160,8 +162,11 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
         if (this.editModeOn) {
             EditWorkoutDialogFragment(this, workout, position).show(parentFragmentManager, "asd")
         } else {
-            //(activity as MainActivity).turnToExercisesPage()
             this.setWorkoutWithExercises(workout.workoutName)
+            (activity as MainActivity).turnToExercisesPage(2)
+//            Handler(Looper.getMainLooper()).postDelayed({
+//                (activity as MainActivity).turnToExercisesPage(2)
+//            }, 0)
         }
     }
 
