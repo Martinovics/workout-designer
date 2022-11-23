@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         // page viewer setup
         this.binding.viewPager.adapter = ViewPagerAdapter(this)
         this.binding.viewPager.setCurrentItem(1, false)
+        this.binding.viewPager.offscreenPageLimit = 3
 
         TabLayoutMediator(this.binding.tabs, this.binding.viewPager) { tab, position ->
             tab.text = when(position) {
