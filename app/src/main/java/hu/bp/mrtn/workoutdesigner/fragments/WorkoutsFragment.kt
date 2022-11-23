@@ -238,7 +238,11 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
         thread {
             this.db.delete(this.adapter.getWorkoutAt(position))
 
-            // todo frissíteni kell az összes többi indexét a sorrendezés miatt
+            for (i in position until this.adapter.itemCount) {
+                val workout = this.adapter.getWorkoutAt(i)
+                workout.workoutIndex = i - 1
+                this.db.updateWorkoutIndex(workout.workoutID!!, workout.workoutIndex)
+            }
 
             activity?.runOnUiThread {
                 this.adapter.removeWorkout(position)

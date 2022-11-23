@@ -25,6 +25,10 @@ interface DatabaseDao {
     fun getWorkoutWithExercises(workoutName: String): WorkoutWithExercises?
 
 
+    @Query("UPDATE workouts SET workout_index = :workoutIndex WHERE workout_id = :workoutID")
+    fun updateWorkoutIndex(workoutID: Long, workoutIndex: Int)
+
+
 
 
     @Insert
@@ -37,4 +41,8 @@ interface DatabaseDao {
 
     @Delete
     fun delete(exercise: ExerciseModel)
+
+
+    @Query("UPDATE exercises SET exercise_index = :exerciseIndex WHERE exercise_id = :exerciseID")
+    fun updateExerciseIndex(exerciseID: Long, exerciseIndex: Int)
 }

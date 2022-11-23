@@ -311,11 +311,13 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
 
     private fun removeExercise(position: Int) {
         thread {
-            val exercise = this.adapter.getExerciseAt(position)
+            this.db.delete(this.adapter.getExerciseAt(position))
 
-            this.db.delete(exercise)
-
-            // todo frissíteni kell az összes többi indexét a sorrendezés miatt
+            for (i in position until this.adapter.itemCount) {
+                val exercise = this.adapter.getExerciseAt(i)
+                exercise.exerciseIndex = i - 1
+                this.db.updateExerciseIndex(exercise.exerciseID!!, exercise.exerciseIndex)
+            }
 
             activity?.runOnUiThread {
                 this.adapter.removeExercise(position)
