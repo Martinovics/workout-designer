@@ -13,19 +13,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import hu.bp.mrtn.workoutdesigner.MainActivity
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.WorkoutAdapter
 import hu.bp.mrtn.workoutdesigner.data.*
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentWorkoutsBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.EditWorkoutDialogClickInterface
-import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
+import hu.bp.mrtn.workoutdesigner.interfaces.WorkoutClickInterface
 import hu.bp.mrtn.workoutdesigner.models.WorkoutDataViewModel
-import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
 import kotlin.concurrent.thread
 
 
-class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClickInterface {
+class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogClickInterface {
 
 
     private val TAG = "WorkoutsFragment"
@@ -154,7 +152,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
 
 
-    override fun onItemClicked(position: Int) {
+    override fun onWorkoutAnywhereClicked(position: Int) {
 
         val workout = this.adapter.getWorkoutAt(position)
 
@@ -169,7 +167,7 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
 
 
-    override fun onItemLongClicked(position: Int): Boolean {
+    override fun onWorkoutAnywhereLongClicked(position: Int): Boolean {
         if (!this.editModeOn) {
             Log.d(TAG, "clicked on position=$position")
             return true
@@ -233,6 +231,20 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
 
 
+    private fun updateWorkout(updatedWorkout: WorkoutModel, position: Int) {
+        thread {
+
+            this.db.update(updatedWorkout)
+
+            activity?.runOnUiThread {
+                this.adapter.updateWorkout(updatedWorkout, position)
+            }
+        }
+    }
+
+
+
+
     private fun removeWorkout(position: Int) {
         thread {
             val workout = this.adapter.getWorkoutAt(position)
@@ -243,20 +255,6 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
 
             activity?.runOnUiThread {
                 this.adapter.removeWorkout(position)
-            }
-        }
-    }
-
-
-
-
-    private fun updateWorkout(updatedWorkout: WorkoutModel, position: Int) {
-        thread {
-
-            this.db.update(updatedWorkout)
-
-            activity?.runOnUiThread {
-                this.adapter.updateWorkout(updatedWorkout, position)
             }
         }
     }
@@ -283,9 +281,6 @@ class WorkoutsFragment() : Fragment(), ItemClickInterface, EditWorkoutDialogClic
             }
         }
     }
-
-
-
 
 
 }

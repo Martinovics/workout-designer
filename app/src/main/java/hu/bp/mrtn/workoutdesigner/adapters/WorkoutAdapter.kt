@@ -1,21 +1,16 @@
 package hu.bp.mrtn.workoutdesigner.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.UiThread
 import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.data.WorkoutModel
-import hu.bp.mrtn.workoutdesigner.data.WorkoutWithExercises
 import hu.bp.mrtn.workoutdesigner.databinding.WorkoutRowBinding
-import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
+import hu.bp.mrtn.workoutdesigner.interfaces.WorkoutClickInterface
 import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
 import java.util.Collections
-import kotlin.math.max
-import kotlin.math.min
 
 
-class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Adapter<WorkoutAdapter.ItemViewHolder>() {
+class WorkoutAdapter(private val listener: WorkoutClickInterface): RecyclerView.Adapter<WorkoutAdapter.ItemViewHolder>() {
 
 
     private var workouts = ArrayList<WorkoutPreviewModel>()
@@ -41,8 +36,8 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
         holder.binding.tvWorkoutSets.text = totalSets.toString()
         holder.binding.tvWorkoutDescription.text = workout.workout.workoutDescription
 
-        holder.binding.root.setOnClickListener { listener.onItemClicked(position) }
-        holder.binding.root.setOnLongClickListener { listener.onItemLongClicked(position) }
+        holder.binding.root.setOnClickListener { listener.onWorkoutAnywhereClicked(position) }
+        holder.binding.root.setOnLongClickListener { listener.onWorkoutAnywhereLongClicked(position) }
     }
 
 
@@ -76,6 +71,14 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
 
 
+    fun updateWorkout(updatedWorkout: WorkoutModel, position: Int) {
+        this.workouts[position].workout = updatedWorkout
+        notifyItemChanged(position)
+    }
+
+
+
+
     fun removeWorkout(position: Int) {
         this.workouts.removeAt(position)
         notifyItemRemoved(position)
@@ -101,44 +104,6 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
 
 
 
-    fun setWorkoutName(workoutName: String, position: Int) {
-        this.workouts[position].workout.workoutName = workoutName
-        notifyItemChanged(position)
-    }
-
-
-    fun setWorkoutDescription(workoutDescription: String, position: Int) {
-        this.workouts[position].workout.workoutDescription = workoutDescription
-        notifyItemChanged(position)
-    }
-
-
-    fun setWorkoutColorHex(colorHex: String, position: Int) {
-        this.workouts[position].workout.workoutColorHex = colorHex
-        notifyItemChanged(position)
-    }
-
-
-    fun setTotalSeries(totalSeries: Int, position: Int) {
-        this.workouts[position].totalSeries = totalSeries
-        notifyItemChanged(position)
-    }
-
-
-    fun setTotalSets(totalSets: Int, position: Int) {
-        this.workouts[position].totalSets = totalSets
-        notifyItemChanged(position)
-    }
-
-
-    fun updateWorkout(updatedWorkout: WorkoutModel, position: Int) {
-        this.workouts[position].workout = updatedWorkout
-        notifyItemChanged(position)
-    }
-
-
-
-
     private fun getWorkoutNames(): ArrayList<String> {
         val workoutNames = ArrayList<String>()
         for (workout in this.workouts) {
@@ -146,6 +111,7 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
         }
         return workoutNames
     }
+
 
 
 
@@ -161,6 +127,8 @@ class WorkoutAdapter(private val listener: ItemClickInterface): RecyclerView.Ada
         }
         return ""
     }
+
+
 
 
     fun conflictingWorkoutName(workoutName: String): Boolean {
