@@ -215,6 +215,12 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
             }
 
             activity?.runOnUiThread {
+                if (workouts.isEmpty()) {
+                    this.binding.tvAddWorkoutHint.visibility = View.VISIBLE
+                } else {
+                    this.binding.tvAddWorkoutHint.visibility = View.GONE
+                }
+
                 for (i in workouts.indices) {
                     this.adapter.addWorkout(workouts[i].workout, totalSeries[i], totalSets[i])
                 }
