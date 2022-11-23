@@ -21,6 +21,10 @@ interface DatabaseDao {
     fun getWorkoutModels(): List<WorkoutModel>
 
 
+    @Query("SELECT * FROM workouts")
+    fun getWorkoutsWithExercises(): List<WorkoutWithExercises>
+
+
     @Query("SELECT * FROM workouts WHERE workout_name = :workoutName")
     fun getWorkoutWithExercises(workoutName: String): WorkoutWithExercises?
 

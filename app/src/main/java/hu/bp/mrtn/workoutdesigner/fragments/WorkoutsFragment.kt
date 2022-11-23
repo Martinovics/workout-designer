@@ -193,11 +193,19 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
     private fun loadWorkouts() {
         thread {
-            val workouts = this.db.getWorkoutModels()
+            val workouts = this.db.getWorkoutsWithExercises()
+
+            val totalSeries = ArrayList<Int>()
+            val totalSets = ArrayList<Int>()
+
+            for (workout in workouts) {
+                totalSeries.add(this.getTotalSeries(workout.exercises))
+                totalSets.add(workout.exercises.size)
+            }
 
             activity?.runOnUiThread {
-                for (workout in workouts) {
-                    this.adapter.addWorkout(workout)
+                for (i in workouts.indices) {
+                    this.adapter.addWorkout(workouts[i].workout, totalSeries[i], totalSets[i])
                 }
             }
         }
@@ -268,6 +276,17 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
                 (activity as MainActivity).preloadExercises(this.workoutDataViewModel.exercises)
             }
         }
+    }
+
+
+
+
+    private fun getTotalSeries(exercises: List<ExerciseModel>): Int {
+        val exerciseNames = ArrayList<String>()
+        for (exercise in exercises) {
+            exerciseNames.add(exercise.exerciseName)
+        }
+        return exerciseNames.distinct().size
     }
 
 
