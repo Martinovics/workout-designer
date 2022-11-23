@@ -257,7 +257,8 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
             activity?.runOnUiThread {
 
                 this.adapter.clearExercises()
-                for (exercise in exercises) {
+                for ((i, exercise) in exercises.withIndex()) {
+                    // this.adapter.addExercise(exercise, delayMillis = i * 100L)
                     this.adapter.addExercise(exercise)
                 }
 

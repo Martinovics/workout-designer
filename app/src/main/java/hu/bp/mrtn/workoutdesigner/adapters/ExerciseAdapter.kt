@@ -1,5 +1,7 @@
 package hu.bp.mrtn.workoutdesigner.adapters
 
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -67,9 +69,18 @@ class ExerciseAdapter(private val listener: ExerciseClickInterface): RecyclerVie
 
 
 
-    fun addExercise(exercise: ExerciseModel): Int {
-        this.exercises.add(exercise)
-        notifyItemInserted(itemCount - 1)
+    fun addExercise(exercise: ExerciseModel, delayMillis: Long = 0): Int {
+
+        if (0 < delayMillis) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                this.exercises.add(exercise)
+                notifyItemInserted(itemCount - 1)
+            }, delayMillis)
+        } else {
+            this.exercises.add(exercise)
+            notifyItemInserted(itemCount - 1)
+        }
+
         return itemCount - 1
     }
 
