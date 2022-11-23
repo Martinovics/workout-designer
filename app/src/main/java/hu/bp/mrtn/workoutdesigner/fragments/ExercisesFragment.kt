@@ -59,7 +59,7 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
         // this.initTouchHelper()
 
 
-
+        binding.btnAddExercise.visibility = View.GONE
         binding.btnAddExercise.setOnClickListener {
             this.addExercise(ExerciseModel(workoutID = workoutDataViewModel.workout.workoutID))
             this.binding.rvExercises.scrollToPosition(this.adapter.itemCount - 1)
@@ -330,6 +330,6 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
         val exercise = this.adapter.getExerciseAt(position)
         EditExerciseDialogFragment(this, exercise, position).show(parentFragmentManager, "asd")
     }
-    
+
 
 }
