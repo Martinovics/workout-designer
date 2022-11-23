@@ -62,8 +62,7 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
 
         binding.btnAddExercise.visibility = View.GONE
         binding.btnAddExercise.setOnClickListener {
-            this.addExercise(ExerciseModel(workoutID = workoutDataViewModel.workout.workoutID))
-            this.binding.rvExercises.scrollToPosition(this.adapter.itemCount - 1)
+            this.addExercise(ExerciseModel(workoutID = workoutDataViewModel.workout.workoutID), scrollToLast = true)
         }
 
         if (this.adapter.itemCount == 0) {
@@ -293,7 +292,7 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
 
 
 
-    private fun addExercise(exercise: ExerciseModel) {
+    private fun addExercise(exercise: ExerciseModel, scrollToLast: Boolean = false) {
         if (exercise.workoutID == null || exercise.workoutID == 0L) {
             Log.i(logTag, "Choose a workout before adding a new exercise")
             return
@@ -311,6 +310,10 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
                     this.workoutDataViewModel.workout.workoutIndex
                 )
                 this.binding.tvAddExerciseHint.visibility = View.GONE
+
+                if (scrollToLast) {  // itt kell mert a thread miatt lefutna ez a sor hamrabb és akkor csak az utolsó előttihez görgetne
+                    this.binding.rvExercises.scrollToPosition(this.adapter.itemCount - 1)
+                }
             }
         }
     }

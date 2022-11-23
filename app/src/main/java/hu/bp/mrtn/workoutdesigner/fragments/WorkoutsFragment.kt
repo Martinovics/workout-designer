@@ -62,8 +62,7 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
         binding.btnAddWorkout.visibility = View.GONE
         binding.btnAddWorkout.setOnClickListener {
-            this.addWorkout(WorkoutModel(workoutID=null, workoutName = this.adapter.genUniqueWorkoutName()))
-            this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
+            this.addWorkout(WorkoutModel(workoutID=null, workoutName = this.adapter.genUniqueWorkoutName()), scrollToLast = true)
         }
 
         if (this.adapter.itemCount == 0) {
@@ -231,7 +230,7 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
 
 
-    private fun addWorkout(workout: WorkoutModel) {
+    private fun addWorkout(workout: WorkoutModel, scrollToLast: Boolean = false) {
         thread {
             workout.workoutIndex = this.adapter.itemCount  // nem kell -1, mert még ez után szúrjuk be
             workout.workoutID = this.db.insert(workout)
@@ -240,6 +239,10 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
                 this.adapter.addWorkout(workout)
                 this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
                 this.binding.tvAddWorkoutHint.visibility = View.GONE
+
+                if (scrollToLast) {
+                    this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
+                }
             }
         }
     }
