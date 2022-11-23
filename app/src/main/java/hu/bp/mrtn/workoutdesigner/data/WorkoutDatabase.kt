@@ -10,8 +10,8 @@ import androidx.room.RoomDatabase
 
 
 @Database(
-    entities = [WorkoutModel::class, ExerciseModel::class], version = 4,
-    autoMigrations = [AutoMigration (from=3, to=4, spec=CustomMigration::class)]
+    entities = [WorkoutModel::class, ExerciseModel::class], version = 5,
+    autoMigrations = [AutoMigration (from=4, to=5, spec=CustomMigration::class)]
 )
 abstract class WorkoutDatabase : RoomDatabase() {
 

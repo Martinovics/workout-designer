@@ -7,7 +7,17 @@ import androidx.room.PrimaryKey
 
 
 
-@Entity(tableName = "exercises")
+@Entity(
+    tableName = "exercises",
+    foreignKeys = [
+        androidx.room.ForeignKey(
+            entity = WorkoutModel::class,
+            parentColumns = ["workout_id"],
+            childColumns = ["workout_id"],
+            onDelete = androidx.room.ForeignKey.CASCADE
+        )
+    ]
+)
 data class ExerciseModel(
     @ColumnInfo(name = "exercise_id") @PrimaryKey(autoGenerate = true) var exerciseID: Long? = null,
     @ColumnInfo(name = "workout_id") var workoutID: Long? = null,

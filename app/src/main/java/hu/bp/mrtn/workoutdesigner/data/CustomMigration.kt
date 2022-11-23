@@ -7,19 +7,5 @@ import androidx.room.migration.AutoMigrationSpec
 
 
 
-@DeleteColumn(
-    tableName = "exercises",
-    columnName = "workout_name"
-)
-@RenameColumn(
-    tableName = "exercises",
-    fromColumnName = "id",
-    toColumnName = "exercise_id"
-)
-@RenameColumn(
-    tableName = "workouts",
-    fromColumnName = "id",
-    toColumnName = "workout_id"
-)
 class CustomMigration: AutoMigrationSpec {
 }
