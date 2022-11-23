@@ -64,6 +64,12 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
             this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
         }
 
+        if (this.adapter.itemCount == 0) {
+            this.binding.tvAddWorkoutHint.visibility = View.VISIBLE
+        } else {
+            this.binding.tvAddWorkoutHint.visibility = View.GONE
+        }
+
     }
 
 
@@ -222,6 +228,7 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
             activity?.runOnUiThread {
                 this.adapter.addWorkout(workout)
                 this.binding.rvWorkouts.scrollToPosition(this.adapter.itemCount - 1)
+                this.binding.tvAddWorkoutHint.visibility = View.GONE
             }
         }
     }
@@ -254,6 +261,10 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
             activity?.runOnUiThread {
                 this.adapter.removeWorkout(position)
+
+                if (this.adapter.itemCount == 0) {
+                    this.binding.tvAddWorkoutHint.visibility = View.VISIBLE
+                }
             }
         }
     }

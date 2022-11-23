@@ -65,6 +65,13 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
             this.addExercise(ExerciseModel(workoutID = workoutDataViewModel.workout.workoutID))
             this.binding.rvExercises.scrollToPosition(this.adapter.itemCount - 1)
         }
+
+        if (this.adapter.itemCount == 0) {
+            this.binding.tvAddExerciseHint.visibility = View.VISIBLE
+        } else {
+            this.binding.tvAddExerciseHint.visibility = View.GONE
+        }
+
     }
 
 
@@ -295,6 +302,7 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
                     this.adapter.itemCount,
                     this.workoutDataViewModel.workout.workoutIndex
                 )
+                this.binding.tvAddExerciseHint.visibility = View.GONE
             }
         }
     }
@@ -337,6 +345,9 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
                     this.adapter.itemCount,
                     this.workoutDataViewModel.workout.workoutIndex
                 )
+                if (this.adapter.itemCount == 0) {
+                    this.binding.tvAddExerciseHint.visibility = View.VISIBLE
+                }
             }
         }
     }
