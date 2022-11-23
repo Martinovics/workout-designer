@@ -11,25 +11,21 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.ExerciseAdapter
-import hu.bp.mrtn.workoutdesigner.adapters.WorkoutAdapter
 import hu.bp.mrtn.workoutdesigner.data.DatabaseDao
 import hu.bp.mrtn.workoutdesigner.data.ExerciseModel
 import hu.bp.mrtn.workoutdesigner.data.WorkoutDatabase
-import hu.bp.mrtn.workoutdesigner.data.WorkoutModel
 import hu.bp.mrtn.workoutdesigner.databinding.EditNumberBinding
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentExercisesBinding
-import hu.bp.mrtn.workoutdesigner.databinding.FragmentWorkoutsBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.CurrentClickInterface
-import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
+import hu.bp.mrtn.workoutdesigner.interfaces.EditExerciseDialogClickInterface
 import hu.bp.mrtn.workoutdesigner.models.WorkoutDataViewModel
 import kotlin.concurrent.thread
 
 
-class ExercisesFragment : Fragment(), CurrentClickInterface {
+class ExercisesFragment : Fragment(), CurrentClickInterface, EditExerciseDialogClickInterface {
 
 
     private val TAG = "ExercisesFragment"
@@ -181,7 +177,8 @@ class ExercisesFragment : Fragment(), CurrentClickInterface {
         val exercise = this.adapter.getExerciseAt(position)
 
         if (this.editModeOn) {
-            // modify exercise
+            this.showExerciseEditDialog(position)
+
         } else {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Current weight")
@@ -215,7 +212,8 @@ class ExercisesFragment : Fragment(), CurrentClickInterface {
         val exercise = this.adapter.getExerciseAt(position)
 
         if (this.editModeOn) {
-            // modify exercise
+            this.showExerciseEditDialog(position)
+
         } else {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Current reps")
@@ -249,7 +247,7 @@ class ExercisesFragment : Fragment(), CurrentClickInterface {
             return
         }
 
-        // modify exercise
+        this.showExerciseEditDialog(position)
     }
 
 
@@ -300,6 +298,21 @@ class ExercisesFragment : Fragment(), CurrentClickInterface {
                 this.adapter.removeExercise(position)
             }
         }
+    }
+
+
+
+
+    override fun onSaveExerciseClicked(updatedExercise: ExerciseModel, position: Int) {
+        this.updateExercise(updatedExercise, position)
+    }
+
+
+
+
+    private fun showExerciseEditDialog(position: Int) {
+        val exercise = this.adapter.getExerciseAt(position)
+        EditExerciseDialogFragment(this, exercise, position).show(parentFragmentManager, "asd")
     }
 
 

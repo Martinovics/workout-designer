@@ -1,27 +1,29 @@
 package hu.bp.mrtn.workoutdesigner.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.data.ExerciseModel
-import hu.bp.mrtn.workoutdesigner.data.WorkoutModel
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentEditExerciseDialogBinding
-import hu.bp.mrtn.workoutdesigner.databinding.FragmentEditWorkoutDialogBinding
 import hu.bp.mrtn.workoutdesigner.interfaces.EditExerciseDialogClickInterface
-import hu.bp.mrtn.workoutdesigner.interfaces.EditWorkoutDialogClickInterface
+
+
+
+
 
 
 class EditExerciseDialogFragment(
-    private val listener: EditExerciseDialogClickInterface, private val exercise: ExerciseModel, private val position: Int) : DialogFragment() {
+    private val listener: EditExerciseDialogClickInterface,
+    private val exercise_: ExerciseModel,
+    private val position: Int) : DialogFragment() {
 
 
-
-
+    private val exercise = this.exercise_.copy()
     private lateinit var binding: FragmentEditExerciseDialogBinding
+
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -45,20 +47,22 @@ class EditExerciseDialogFragment(
 
 
         this.binding.btnEditExerciseOk.setOnClickListener {
-            listener.onSaveExerciseClicked(
-                this.binding.etEditExerciseName.text.toString(),
-                this.binding.etEditExerciseCurrWeight.text.toString().toInt(),
-                this.binding.etEditExerciseGoalWeight.text.toString().toInt(),
-                this.binding.etEditExerciseCurrReps.text.toString().toInt(),
-                this.binding.etEditExerciseGoalReps.text.toString().toInt(),
-                this.binding.etEditExerciseDescription.text.toString(),
-                this.binding.etEditExerciseComment.text.toString(),
-                this.position
-            )
+
+            // todo üreseket le kell kezelni
+            this.exercise.exerciseName = this.binding.etEditExerciseName.text.toString()
+            this.exercise.currWeight = this.binding.etEditExerciseCurrWeight.text.toString().toInt()
+            this.exercise.goalWeight = this.binding.etEditExerciseGoalWeight.text.toString().toInt()
+            this.exercise.currReps = this.binding.etEditExerciseCurrReps.text.toString().toInt()
+            this.exercise.goalReps = this.binding.etEditExerciseGoalReps.text.toString().toInt()
+            this.exercise.exerciseDescription = this.binding.etEditExerciseDescription.text.toString()
+            this.exercise.exerciseComment = this.binding.etEditExerciseComment.text.toString()
+
+            listener.onSaveExerciseClicked(this.exercise, this.position)
             dismiss()
         }
 
-        this.binding.btnEditExerciseOk.setOnClickListener { dismiss() }
+        this.binding.btnEditExerciseCancel.setOnClickListener { dismiss() }
+
 
     }
 
