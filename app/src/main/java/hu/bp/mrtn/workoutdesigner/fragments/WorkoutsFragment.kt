@@ -101,12 +101,6 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
                             binding.btnAddWorkout.visibility = View.GONE
                            // this@WorkoutsFragment.itemTouchHelper.attachToRecyclerView(this@WorkoutsFragment.binding.rvWorkouts)
                         }
-
-
-
-                        // megjelenítjük a floating buttont
-                        // az adapterben újraállítjuk a listenereket
-
                         return true
                     }
                 }
@@ -190,13 +184,8 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
 
 
-    override fun onSaveWorkoutClicked(workout_name: String, workout_description: String, position: Int) {  // todo itt még nincs color
-
-        val workout = this.adapter.getWorkoutAt(position)
-        workout.workoutName = workout_name
-        workout.workoutDescription = workout_description
-
-        this.updateWorkout(workout, position)
+    override fun onSaveWorkoutClicked(updatedWorkout: WorkoutModel, position: Int) {  // todo itt még nincs color
+        this.updateWorkout(updatedWorkout, position)
     }
 
 
@@ -219,8 +208,7 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
     private fun addWorkout(workout: WorkoutModel) {
         thread {
-            val id = this.db.insert(workout)
-            workout.workoutID = id
+            workout.workoutID = this.db.insert(workout)
 
             activity?.runOnUiThread {
                 this.adapter.addWorkout(workout)
@@ -234,7 +222,6 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
     private fun updateWorkout(updatedWorkout: WorkoutModel, position: Int) {
         thread {
-
             this.db.update(updatedWorkout)
 
             activity?.runOnUiThread {
@@ -248,9 +235,7 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
     private fun removeWorkout(position: Int) {
         thread {
-            val workout = this.adapter.getWorkoutAt(position)
-
-            this.db.delete(workout)
+            this.db.delete(this.adapter.getWorkoutAt(position))
 
             // todo frissíteni kell az összes többi indexét a sorrendezés miatt
 
@@ -263,24 +248,19 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
 
 
-    private fun setWorkoutWithExercises(workoutName: String) {
+    private fun setWorkoutWithExercises(workoutName: String) {  // it also preloads data for exercises fragment
         thread {
-            val workouts = this.db.getWorkouts()
-            for (workout in workouts) {
-                if (workout.workout.workoutName == workoutName) {
+            val workoutWithExercises = this.db.getWorkoutWithExercises(workoutName)
+            if (workoutWithExercises != null) {
 
-                    val exercises = ArrayList<ExerciseModel>()
-                    for (exercise in workout.exercises) {
-                        exercises.add(exercise)
-                    }
-
-                    this@WorkoutsFragment.workoutDataViewModel.workout = workout.workout
-                    this@WorkoutsFragment.workoutDataViewModel.exercises = exercises
-
-                    (activity as MainActivity).preloadExercises(this.workoutDataViewModel.exercises)
-
-                    break
+                val exercises = ArrayList<ExerciseModel>()
+                for (exercise in workoutWithExercises.exercises) {
+                    exercises.add(exercise)
                 }
+
+                this@WorkoutsFragment.workoutDataViewModel.workout = workoutWithExercises.workout
+                this@WorkoutsFragment.workoutDataViewModel.exercises = exercises
+                (activity as MainActivity).preloadExercises(this.workoutDataViewModel.exercises)
             }
         }
     }

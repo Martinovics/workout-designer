@@ -10,21 +10,21 @@ interface DatabaseDao {
     @Insert
     fun insert(workout: WorkoutModel): Long
 
-
     @Update
     fun update(workout: WorkoutModel)
-
 
     @Delete
     fun delete(workout: WorkoutModel)
 
 
     @Query("SELECT * FROM workouts")
-    fun getWorkouts(): List<WorkoutWithExercises>
-
-
-    @Query("SELECT * FROM workouts")
     fun getWorkoutModels(): List<WorkoutModel>
+
+
+    @Query("SELECT * FROM workouts WHERE workout_name = :workoutName")
+    fun getWorkoutWithExercises(workoutName: String): WorkoutWithExercises?
+
+
 
 
     @Insert

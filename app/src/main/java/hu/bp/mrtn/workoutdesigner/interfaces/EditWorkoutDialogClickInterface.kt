@@ -1,6 +1,8 @@
 package hu.bp.mrtn.workoutdesigner.interfaces
 
+import hu.bp.mrtn.workoutdesigner.data.WorkoutModel
+
 
 interface EditWorkoutDialogClickInterface {
-    fun onSaveWorkoutClicked(workout_name: String, workout_description: String, position: Int)
+    fun onSaveWorkoutClicked(updatedWorkout: WorkoutModel, position: Int)
 }

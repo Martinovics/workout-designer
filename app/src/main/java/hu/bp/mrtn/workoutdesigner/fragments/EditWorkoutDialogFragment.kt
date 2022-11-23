@@ -12,13 +12,15 @@ import hu.bp.mrtn.workoutdesigner.models.WorkoutPreviewModel
 
 
 class EditWorkoutDialogFragment(
-    private val listener: EditWorkoutDialogClickInterface, private val workout: WorkoutModel, private val position: Int) : DialogFragment() {
+    private val listener: EditWorkoutDialogClickInterface,
+    private val workout_: WorkoutModel,
+    private val position: Int) : DialogFragment() {
 
-    // a workout_name és a workout_description-t azért adjuk át, hogy előre ki tudjuk tölteni a textboxot
-    // a position meg azért kell, hogy tudjuk, melyik gyakorlatot kell frissíteni
 
-
+    private val workout = this.workout_.copy()
     private lateinit var binding: FragmentEditWorkoutDialogBinding
+
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -36,11 +38,12 @@ class EditWorkoutDialogFragment(
         this.binding.etEditWorkoutDescription.setText(this.workout.workoutDescription)
 
         this.binding.btnEditWorkoutOk.setOnClickListener {
-            listener.onSaveWorkoutClicked(
-                this.binding.etEditWorkoutName.text.toString(),
-                this.binding.etEditWorkoutDescription.text.toString(),
-                this.position
-            )
+
+            // todo üreseket le kell kezelni
+            this.workout.workoutName = this.binding.etEditWorkoutName.text.toString()
+            this.workout.workoutDescription = this.binding.etEditWorkoutDescription.text.toString()
+
+            listener.onSaveWorkoutClicked(this.workout, position)
             dismiss()
         }
 
