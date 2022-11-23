@@ -67,9 +67,10 @@ class ExerciseAdapter(private val listener: ExerciseClickInterface): RecyclerVie
 
 
 
-    fun addExercise(exercise: ExerciseModel) {
+    fun addExercise(exercise: ExerciseModel): Int {
         this.exercises.add(exercise)
         notifyItemInserted(itemCount - 1)
+        return itemCount - 1
     }
 
 

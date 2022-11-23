@@ -110,12 +110,6 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
                             binding.btnAddExercise.visibility = View.GONE
                             // this@WorkoutsFragment.itemTouchHelper.attachToRecyclerView(this@WorkoutsFragment.binding.rvWorkouts)
                         }
-
-
-
-                        // megjelenítjük a floating buttont
-                        // az adapterben újraállítjuk a listenereket
-
                         return true
                     }
                 }
@@ -290,8 +284,8 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
         }
 
         thread {
-            val id = this.db.insert(exercise)
-            exercise.exerciseID = id
+            exercise.exerciseIndex = this.adapter.itemCount  // nem kell -1, mert még ez után szúrjuk be
+            exercise.exerciseID = this.db.insert(exercise)
 
             activity?.runOnUiThread {
                 this.adapter.addExercise(exercise)
@@ -336,12 +330,6 @@ class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialog
         val exercise = this.adapter.getExerciseAt(position)
         EditExerciseDialogFragment(this, exercise, position).show(parentFragmentManager, "asd")
     }
-
-
-
-    fun sayHello() {
-        Log.d(logTag, "hello")
-    }
-
+    
 
 }

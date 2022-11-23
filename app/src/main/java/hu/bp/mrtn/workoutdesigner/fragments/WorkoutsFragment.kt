@@ -208,6 +208,7 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
 
     private fun addWorkout(workout: WorkoutModel) {
         thread {
+            workout.workoutIndex = this.adapter.itemCount  // nem kell -1, mert még ez után szúrjuk be
             workout.workoutID = this.db.insert(workout)
 
             activity?.runOnUiThread {

@@ -55,9 +55,10 @@ class WorkoutAdapter(private val listener: WorkoutClickInterface): RecyclerView.
 
 
 
-    fun addWorkout(workout: WorkoutModel) {
+    fun addWorkout(workout: WorkoutModel): Int {
         this.workouts.add(WorkoutPreviewModel(workout, 0, 0))
         notifyItemInserted(itemCount - 1)
+        return itemCount - 1
     }
 
 
