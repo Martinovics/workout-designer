@@ -287,9 +287,14 @@ class WorkoutsFragment() : Fragment(), WorkoutClickInterface, EditWorkoutDialogC
                     exercises.add(exercise)
                 }
 
+                val oldWorkoutName = this@WorkoutsFragment.workoutDataViewModel.workout.workoutName
+
                 this@WorkoutsFragment.workoutDataViewModel.workout = workoutWithExercises.workout
                 this@WorkoutsFragment.workoutDataViewModel.exercises = exercises
-                (activity as MainActivity).preloadExercises(this.workoutDataViewModel.exercises)
+
+                if (this@WorkoutsFragment.workoutDataViewModel.workout.workoutName != oldWorkoutName) {
+                    (activity as MainActivity).preloadExercises(this.workoutDataViewModel.exercises)
+                }
             }
         }
     }
