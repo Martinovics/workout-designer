@@ -11,6 +11,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.bp.mrtn.workoutdesigner.R
 import hu.bp.mrtn.workoutdesigner.adapters.ExerciseAdapter
@@ -19,23 +20,22 @@ import hu.bp.mrtn.workoutdesigner.data.ExerciseModel
 import hu.bp.mrtn.workoutdesigner.data.WorkoutDatabase
 import hu.bp.mrtn.workoutdesigner.databinding.EditNumberBinding
 import hu.bp.mrtn.workoutdesigner.databinding.FragmentExercisesBinding
-import hu.bp.mrtn.workoutdesigner.interfaces.CurrentClickInterface
+import hu.bp.mrtn.workoutdesigner.interfaces.ExerciseClickInterface
 import hu.bp.mrtn.workoutdesigner.interfaces.EditExerciseDialogClickInterface
 import hu.bp.mrtn.workoutdesigner.models.WorkoutDataViewModel
 import kotlin.concurrent.thread
 
 
-class ExercisesFragment : Fragment(), CurrentClickInterface, EditExerciseDialogClickInterface {
+class ExercisesFragment : Fragment(), ExerciseClickInterface, EditExerciseDialogClickInterface {
 
 
-    private val TAG = "ExercisesFragment"
+    private val logTag = "ExercisesFragment"
     private var editModeOn = false
     private lateinit var binding: FragmentExercisesBinding
     private lateinit var adapter: ExerciseAdapter
-    // private lateinit var itemTouchHelper: ItemTouchHelper
+    private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var db: DatabaseDao
     private val workoutDataViewModel: WorkoutDataViewModel by activityViewModels()
-
 
 
 
@@ -73,6 +73,8 @@ class ExercisesFragment : Fragment(), CurrentClickInterface, EditExerciseDialogC
 
         this.loadExercises()
     }
+
+
 
 
     override fun onPause() {  // itt vissza kell állítani, úgy mintha nem lennénk szerkesztő módban
@@ -135,45 +137,12 @@ class ExercisesFragment : Fragment(), CurrentClickInterface, EditExerciseDialogC
 
 
 
-    private fun loadExercises() {
-        if (workoutDataViewModel.workout.workoutID == null || workoutDataViewModel.workout.workoutID == 0L) {
-            Log.i(TAG, "Choose a workout before adding a new exercise")
-            return
-        }
-
-        thread {
-            activity?.runOnUiThread {
-                this.adapter.clearExercises()
-                for (exercise in workoutDataViewModel.exercises) {
-                    this.adapter.addExercise(exercise)
-                }
-            }
-        }
-    }
+    private fun initTouchHelper() { }
 
 
 
 
-    private fun addExercise(exercise: ExerciseModel) {
-        if (exercise.workoutID == null || exercise.workoutID == 0L) {
-            Log.i(TAG, "Choose a workout before adding a new exercise")
-            return
-        }
-
-        thread {
-            val id = this.db.insert(exercise)
-            exercise.exerciseID = id
-
-            activity?.runOnUiThread {
-                this.adapter.addExercise(exercise)
-            }
-        }
-    }
-
-
-
-
-    override fun onWeightClicked(position: Int) {
+    override fun onExerciseWeightBoxClicked(position: Int) {
         val exercise = this.adapter.getExerciseAt(position)
 
         if (this.editModeOn) {
@@ -208,7 +177,7 @@ class ExercisesFragment : Fragment(), CurrentClickInterface, EditExerciseDialogC
 
 
 
-    override fun onRepsClicked(position: Int) {
+    override fun onExerciseRepsBoxClicked(position: Int) {
         val exercise = this.adapter.getExerciseAt(position)
 
         if (this.editModeOn) {
@@ -242,7 +211,7 @@ class ExercisesFragment : Fragment(), CurrentClickInterface, EditExerciseDialogC
 
 
 
-    override fun onRootClicked(position: Int) {
+    override fun onExerciseAnywhereClicked(position: Int) {
         if (!this.editModeOn) {
             return
         }
@@ -253,7 +222,7 @@ class ExercisesFragment : Fragment(), CurrentClickInterface, EditExerciseDialogC
 
 
 
-    override fun onRootLongClicked(position: Int): Boolean {
+    override fun onExerciseAnywhereLongClicked(position: Int): Boolean {
         if (!this.editModeOn) {
             return true
         }
@@ -268,6 +237,51 @@ class ExercisesFragment : Fragment(), CurrentClickInterface, EditExerciseDialogC
         builder.show()
 
         return true
+    }
+
+
+
+
+    override fun onSaveExerciseClicked(updatedExercise: ExerciseModel, position: Int) {
+        this.updateExercise(updatedExercise, position)
+    }
+
+
+
+
+    private fun loadExercises() {
+        if (workoutDataViewModel.workout.workoutID == null || workoutDataViewModel.workout.workoutID == 0L) {
+            Log.i(logTag, "Choose a workout before adding a new exercise")
+            return
+        }
+
+        thread {
+            activity?.runOnUiThread {
+                this.adapter.clearExercises()
+                for (exercise in workoutDataViewModel.exercises) {
+                    this.adapter.addExercise(exercise)
+                }
+            }
+        }
+    }
+
+
+
+
+    private fun addExercise(exercise: ExerciseModel) {
+        if (exercise.workoutID == null || exercise.workoutID == 0L) {
+            Log.i(logTag, "Choose a workout before adding a new exercise")
+            return
+        }
+
+        thread {
+            val id = this.db.insert(exercise)
+            exercise.exerciseID = id
+
+            activity?.runOnUiThread {
+                this.adapter.addExercise(exercise)
+            }
+        }
     }
 
 
@@ -298,13 +312,6 @@ class ExercisesFragment : Fragment(), CurrentClickInterface, EditExerciseDialogC
                 this.adapter.removeExercise(position)
             }
         }
-    }
-
-
-
-
-    override fun onSaveExerciseClicked(updatedExercise: ExerciseModel, position: Int) {
-        this.updateExercise(updatedExercise, position)
     }
 
 

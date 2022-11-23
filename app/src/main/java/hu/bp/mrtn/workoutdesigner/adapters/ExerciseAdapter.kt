@@ -4,20 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import hu.bp.mrtn.workoutdesigner.data.ExerciseModel
-import hu.bp.mrtn.workoutdesigner.data.WorkoutModel
-import hu.bp.mrtn.workoutdesigner.data.WorkoutWithExercises
 import hu.bp.mrtn.workoutdesigner.databinding.ExerciseRowBinding
-import hu.bp.mrtn.workoutdesigner.interfaces.CurrentClickInterface
-import hu.bp.mrtn.workoutdesigner.interfaces.ItemClickInterface
+import hu.bp.mrtn.workoutdesigner.interfaces.ExerciseClickInterface
 import java.util.Collections
-import kotlin.math.max
-import kotlin.math.min
 
 
-
-
-class ExerciseAdapter(private val listener: CurrentClickInterface): RecyclerView.Adapter<ExerciseAdapter.ItemViewHolder>() {
-
+class ExerciseAdapter(private val listener: ExerciseClickInterface): RecyclerView.Adapter<ExerciseAdapter.ItemViewHolder>() {
 
 
     private var exercises = ArrayList<ExerciseModel>()
@@ -43,10 +35,10 @@ class ExerciseAdapter(private val listener: CurrentClickInterface): RecyclerView
         holder.binding.tvExerciseCurrReps.text = exercise.currReps.toString()
         holder.binding.tvExerciseGoalReps.text = exercise.goalReps.toString()
 
-        holder.binding.root.setOnClickListener { listener.onRootClicked(position) }
-        holder.binding.root.setOnLongClickListener { listener.onRootLongClicked(position) }
-        holder.binding.llExerciseWeight.setOnClickListener { listener.onWeightClicked(position) }
-        holder.binding.llExerciseReps.setOnClickListener { listener.onRepsClicked(position) }
+        holder.binding.root.setOnClickListener { listener.onExerciseAnywhereClicked(position) }
+        holder.binding.root.setOnLongClickListener { listener.onExerciseAnywhereLongClicked(position) }
+        holder.binding.llExerciseWeight.setOnClickListener { listener.onExerciseWeightBoxClicked(position) }
+        holder.binding.llExerciseReps.setOnClickListener { listener.onExerciseRepsBoxClicked(position) }
     }
 
 
@@ -100,22 +92,6 @@ class ExerciseAdapter(private val listener: CurrentClickInterface): RecyclerView
             notifyItemRangeChanged(toPosition, fromPosition - toPosition + 1)
         }
 
-    }
-
-
-
-
-    fun setCurrentReps(currReps: Int, position: Int) {
-        this.exercises[position].currReps = currReps
-        notifyItemChanged(position)
-    }
-
-
-
-
-    fun setCurrentWeight(currWeight: Int, position: Int) {
-        this.exercises[position].currWeight = currWeight
-        notifyItemChanged(position)
     }
 
 
