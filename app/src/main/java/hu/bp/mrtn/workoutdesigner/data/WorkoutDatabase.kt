@@ -35,7 +35,9 @@ abstract class WorkoutDatabase : RoomDatabase() {
                     applicationContext,
                     WorkoutDatabase::class.java,
                     "workout-planner"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
 
                 INSTANCE = instance
                 return instance
